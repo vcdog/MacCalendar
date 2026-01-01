@@ -54,6 +54,8 @@ struct SettingsIconView: View {
     }
 }
 
-#Preview {
-    SettingsIconView()
+struct SettingsIconView_Previews: PreviewProvider {
+    static var previews: some View {
+        SettingsIconView()
+    }
 }

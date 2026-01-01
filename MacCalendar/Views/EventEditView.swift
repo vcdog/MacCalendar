@@ -41,16 +41,18 @@ struct EventEditView: View {
                 HStack{
                     Image(systemName: "t.square").font(.title3).frame(width: 35)
                         .foregroundColor(.secondary)
-                    TextField("标题", text: $editedEvent.title,axis: .vertical)
+                    TextField("标题", text: $editedEvent.title)
                         .textFieldStyle(.plain)
                 }
                 
                 Divider()
                     .foregroundStyle(Color(hex: "cccccc"))
                 
-                rowItem("location", placeholder: "地点", content:
-                            TextField("地点", text: bindingFor(optionalString: $editedEvent.location),axis: .vertical)
-                )
+                HStack {
+                    Image(systemName: "location").font(.title3).frame(width: 35).foregroundColor(.secondary)
+                    TextField("地点", text: bindingFor(optionalString: $editedEvent.location))
+                        .textFieldStyle(.plain)
+                } 
                 
                 Divider()
                     .foregroundStyle(Color(hex: "cccccc"))
@@ -71,25 +73,31 @@ struct EventEditView: View {
                     DatePicker("", selection: $editedEvent.endDate, in: editedEvent.startDate..., displayedComponents: editedEvent.isAllDay ? .date : [.date, .hourAndMinute])
                         .labelsHidden()
                 }
-                .onChange(of: editedEvent.startDate) { _, newStartDate in
+                .onChange(of: editedEvent.startDate) { newStartDate in
                     if newStartDate > editedEvent.endDate {
                         editedEvent.endDate = newStartDate
                     }
                 }
                 
-                Divider()
-                    .foregroundStyle(Color(hex: "cccccc"))
-                
-                rowItem("link", placeholder: "URL", content:
-                            TextField("URL", text: bindingFor(optionalURL: $editedEvent.url))
-                )
-                
-                Divider()
-                    .foregroundStyle(Color(hex: "cccccc"))
-                
-                rowItem("doc.text", placeholder: "备注", content:
-                            TextField("备注", text: bindingFor(optionalString: $editedEvent.notes), axis: .vertical)
-                )
+                Group {
+                    Divider()
+                        .foregroundStyle(Color(hex: "cccccc"))
+                    
+                    HStack {
+                        Image(systemName: "link").font(.title3).frame(width: 35).foregroundColor(.secondary)
+                        TextField("URL", text: bindingFor(optionalURL: $editedEvent.url))
+                            .textFieldStyle(.plain)
+                    }
+                    
+                    Divider()
+                        .foregroundStyle(Color(hex: "cccccc"))
+                    
+                    HStack {
+                        Image(systemName: "doc.text").font(.title3).frame(width: 35).foregroundColor(.secondary)
+                        TextField("备注", text: bindingFor(optionalString: $editedEvent.notes))
+                            .textFieldStyle(.plain)
+                    }
+                }
             }
             .padding(10)
             .background(Color(hex: "#ccc").opacity(0.1))
@@ -165,11 +173,5 @@ struct EventEditView: View {
         }
     }
     
-    @ViewBuilder
-    private func rowItem<Content: View>(_ iconName: String, placeholder: String, content: Content) -> some View {
-        HStack {
-            Image(systemName: iconName).font(.title3).frame(width: 35).foregroundColor(.secondary)
-            content.textFieldStyle(.plain)
-        }
-    }
+
 }

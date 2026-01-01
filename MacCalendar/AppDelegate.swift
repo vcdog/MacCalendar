@@ -9,6 +9,7 @@ import SwiftUI
 import AppKit
 import Combine
 
+@MainActor
 class AppDelegate: NSObject,NSApplicationDelegate, NSWindowDelegate {
     static var shared:AppDelegate?
     
@@ -86,6 +87,7 @@ class AppDelegate: NSObject,NSApplicationDelegate, NSWindowDelegate {
             if popover.isShown {
                 popover.performClose(nil)
             } else {
+
                 calendarManager.resetToToday()
                 
                 let hostingController = FocusableHostingController(rootView: ContentView()

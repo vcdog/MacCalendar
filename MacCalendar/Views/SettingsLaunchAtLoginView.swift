@@ -13,7 +13,7 @@ struct SettingsLaunchAtLoginView: View {
     var body: some View {
         VStack{
             Toggle("开机时自动启动", isOn: $launchAtLogin)
-                .onChange(of: launchAtLogin) { oldValue, newValue in
+                .onChange(of: launchAtLogin) { newValue in
                     LaunchAtLoginManager.setLaunchAtLogin(enabled: newValue)
                 }
             

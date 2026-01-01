@@ -19,6 +19,10 @@ class CalendarManager: ObservableObject {
     @Published var selectedDayEvents: [CalendarEvent] = []
     @Published var authorizationStatus: EKAuthorizationStatus = .notDetermined
     @Published var weekdays:[String] = []
+
+    var isAuthorized: Bool {
+        return authorizationStatus == .authorized
+    }
         
     private let calendar = Calendar.Based
     private let eventStore = EKEventStore()
@@ -131,7 +135,7 @@ class CalendarManager: ObservableObject {
     func loadCalendarDays(date: Date) async {
         await requestAccess()
         
-        guard authorizationStatus == .fullAccess else {
+        guard self.isAuthorized else {
             print("日历权限未授予，仅显示日期。")
             generateCalendarGrid(for: date, events: [:])
             return
@@ -152,7 +156,7 @@ class CalendarManager: ObservableObject {
     
     func loadCalendarInfo() async {
         if authorizationStatus == .notDetermined { await requestAccess() }
-        guard authorizationStatus == .fullAccess else { return }
+        guard self.isAuthorized else { return }
         
         let allEKCalendars = eventStore.calendars(for: .event)
         
@@ -171,7 +175,7 @@ class CalendarManager: ObservableObject {
     }
     
     func updateEvent(event: CalendarEvent) async throws {
-        guard authorizationStatus == .fullAccess else {
+        guard self.isAuthorized else {
             throw CalendarError.noPermission
         }
         
@@ -200,7 +204,7 @@ class CalendarManager: ObservableObject {
     }
     
     func deleteEvent(withId eventId: String) async throws {
-        guard authorizationStatus == .fullAccess else {
+        guard self.isAuthorized else {
             throw CalendarError.noPermission
         }
         
@@ -234,8 +238,9 @@ class CalendarManager: ObservableObject {
     
     private func requestAccess() async {
         do {
-            let granted = try await eventStore.requestFullAccessToEvents()
-            authorizationStatus = granted ? .fullAccess : .denied
+
+            let granted = try await eventStore.requestAccess(to: .event)
+            authorizationStatus = granted ? .authorized : .denied
         } catch {
             authorizationStatus = .denied
             print("请求日历访问权限时出错: \(error.localizedDescription)")

@@ -150,7 +150,7 @@ struct EditableDateComponent: View {
                     .onSubmit {
                         commitChange()
                     }
-                    .onChange(of: focusState) { oldValue,newValue in
+                    .onChange(of: focusState) { newValue in
                         if newValue != equals {
                             commitChange()
                         }
@@ -199,7 +199,9 @@ struct EditableDateComponent: View {
             let year = Calendar.current.component(.year, from: newDate)
             let month = Calendar.current.component(.month, from: newDate)
             
-            calendarManager.goToCustomizeMonth(year: year, month: month)
+            Task { @MainActor in
+                calendarManager.goToCustomizeMonth(year: year, month: month)
+            }
         }
         
         isEditing = false

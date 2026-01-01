@@ -34,6 +34,8 @@ struct SettingsAboutView: View {
     }
 }
 
-#Preview {
-    SettingsAboutView()
+struct SettingsAboutView_Previews: PreviewProvider {
+    static var previews: some View {
+        SettingsAboutView()
+    }
 }
